@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="adminHeader">
+
+    <!-- STYLE RIÊNG CHO ADMIN HEADER -->
+    <style>
+        .admin-navbar {
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .admin-title {
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            margin-right: 10px;
+        }
+
+        .logout-btn {
+            border-radius: 20px;
+            padding: 6px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #fff;
+        }
+    </style>
+
+    <nav class="navbar admin-navbar shadow-sm px-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+
+            <!-- TITLE -->
+            <span class="admin-title">🛠 ADMIN CONTROL PANEL</span>
+
+            <!-- AVATAR + LOGOUT -->
+            <div class="d-flex align-items-center">
+
+                <img th:src="@{/image/logo3.jpg}"
+                     alt="admin"
+                     class="admin-avatar">
+
+                <a th:href="@{/logout}" class="btn btn-outline-light logout-btn">
+                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+</header>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Quản lý Người dùng'">Quản lý Người dùng</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+            padding: 2.5rem;
+            margin: 3rem auto;
+            max-width: 1400px;
+        }
+        .page-title {
+            color: #667eea;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .table thead {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: 1rem;
+        }
+        .role-badge {
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            min-width: 110px;
+        }
+        .role-user { background: #d1fae5; color: #065f46; }
+        .role-staff { background: #fefcbf; color: #92400e; }
+        .btn-action { margin: 0.3rem; font-size: 0.9rem; border-radius: 8px; }
+        .empty-state {
+            text-align: center;
+            padding: 5rem 0;
+            color: #9ca3af;
+        }
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.4;
+        }
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+<!-- Header admin -->
+<div th:replace="fragments/admin-header :: adminHeader"></div>
+
+<div class="container">
+    <h2 class="page-title">
+        <i class="fas fa-users me-2"></i> Quản lý Người dùng
+    </h2>
+
+    <!-- Thông báo flash -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Bảng danh sách (chỉ USER và STAFF – đã được lọc từ controller) -->
+    <div th:unless="${customers.isEmpty()}">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Vai trò</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td th:text="${customer.customerID}"></td>
+                    <td th:text="${customer.userName}"></td>
+                    <td th:text="${customer.email}"></td>
+                    <td th:text="${customer.phone}"></td>
+                    <td>
+                        <span class="role-badge"
+                              th:classappend="${customer.role == 'STAFF' ? 'role-staff' : 'role-user'}"
+                              th:text="${customer.role ?: 'USER'}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/customers/{id}(id=${customer.customerID})}"
+                           class="btn btn-sm btn-info btn-action">
+                            <i class="fas fa-eye"></i> Chi tiết
+                        </a>
+
+                        <!-- Cập nhật role (chỉ USER ↔ STAFF) -->
+                        <form th:action="@{/admin/customers/{id}/update-role(id=${customer.customerID})}"
+                              method="post" class="d-inline">
+                            <select name="role" class="form-select form-select-sm d-inline w-auto">
+                                <option value="USER" th:selected="${customer.role == 'USER'}">USER</option>
+                                <option value="STAFF" th:selected="${customer.role == 'STAFF'}">STAFF</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary ms-1">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </form>
+
+                        <!-- Xóa -->
+                        <form th:action="@{/admin/customers/{id}/delete(id=${customer.customerID})}"
+                              method="post" class="d-inline"
+                              onsubmit="return confirm('Bạn chắc chắn muốn xóa người dùng này?');">
+                            <button type="submit" class="btn btn-sm btn-danger ms-1">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Không có user (USER/STAFF) -->
+    <div th:if="${customers.isEmpty()}" class="empty-state">
+        <i class="fas fa-users-slash"></i>
+        <h4>Chưa có người dùng nào</h4>
+        <p>Hiện tại hệ thống chưa có khách hàng hoặc nhân viên đăng ký (ADMIN đã được ẩn).</p>
+    </div>
+
+    <!-- Nút quay về -->
+    <div class="text-center mt-4">
+        <a th:href="@{/admin}" class="back-btn">
+            <i class="fas fa-arrow-left me-2"></i> Quay về Dashboard
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Footer admin -->
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+</body>
+</html>

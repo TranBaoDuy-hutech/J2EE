@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- ========== HEADER FRAGMENT ========== -->
+<header class="main-header" th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <!-- Logo & Brand -->
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-airplane-fill"></i>
+                Việt Lữ Travel
+            </a>
+
+            <!-- Toggle button for mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Nav items -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" th:classappend="${#strings.equals(currentPage, 'home')} ? 'active' : ''">
+                            <i class="bi bi-house-fill"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tours" th:classappend="${#strings.equals(currentPage, 'tours')} ? 'active' : ''">
+                            <i class="bi bi-map"></i> Tour du lịch
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about" th:classappend="${#strings.equals(currentPage, 'about')} ? 'active' : ''">
+                            <i class="bi bi-info-circle"></i> Giới thiệu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact" th:classappend="${#strings.equals(currentPage, 'contact')} ? 'active' : ''">
+                            <i class="bi bi-telephone"></i> Liên hệ
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Header buttons -->
+                <div class="header-buttons d-flex gap-2 align-items-center">
+
+                    <!-- CHƯA LOGIN -->
+                    <div th:if="${session.user == null}" class="d-flex gap-2">
+                        <a href="/login" class="btn btn-outline-light">
+                            <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                        </a>
+                        <a href="/register" class="btn btn-light">
+                            <i class="bi bi-person-plus"></i> Đăng ký
+                        </a>
+                    </div>
+
+                    <!-- ĐÃ LOGIN -->
+                    <div th:if="${session.user != null}" class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span th:text="${session.user.userName}"></span>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="/profile">
+                                    <i class="bi bi-person"></i> Hồ sơ cá nhân
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/booking-history">
+                                    <i class="bi bi-ticket"></i> Tour đã đặt
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="/logout">
+                                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- ========== CSS STYLES FOR HEADER ========== -->
+<th:block th:fragment="header-css">
+    <style>
+        :root {
+            --ocean-blue: #0891b2;
+            --ocean-blue-dark: #0e7490;
+            --ocean-blue-light: #06b6d4;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
+            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.2);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .navbar-brand:hover {
+            color: #e0f2fe !important;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white !important;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white !important;
+        }
+
+        .header-buttons .btn {
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+        }
+
+        .btn-outline-light {
+            border: 2px solid white;
+        }
+
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--ocean-blue);
+        }
+
+        .btn-light {
+            background: white;
+            color: var(--ocean-blue);
+            border: none;
+        }
+
+        .btn-light:hover {
+            background: #e0f2fe;
+            color: var(--ocean-blue-dark);
+        }
+    </style>
+</th:block>
+
+</body>
+</html>

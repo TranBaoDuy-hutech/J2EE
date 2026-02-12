@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- ========== FOOTER FRAGMENT ========== -->
+<footer class="main-footer" th:fragment="footer">
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <!-- About -->
+            <div class="col-lg-4">
+                <h5 class="footer-title">
+                    <i class="bi bi-airplane-fill"></i> Việt Lữ Travel
+                </h5>
+                <p class="text-white-50">
+                    Chúng tôi mang đến những trải nghiệm du lịch tuyệt vời nhất,
+                    khám phá vùng đất An Giang miền Tây sông nước.
+                </p>
+
+                <!-- Social Links -->
+                <div class="social-links mt-3">
+                    <a href="#" title="Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="#" title="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="#" title="YouTube">
+                        <i class="bi bi-youtube"></i>
+                    </a>
+                    <a href="#" title="TikTok">
+                        <i class="bi bi-tiktok"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-title">Liên kết nhanh</h5>
+                <a href="/" class="footer-link">
+                    <i class="bi bi-chevron-right"></i> Trang chủ
+                </a>
+                <a href="/tours" class="footer-link">
+                    <i class="bi bi-chevron-right"></i> Tour du lịch
+                </a>
+                <a href="/about" class="footer-link">
+                    <i class="bi bi-chevron-right"></i> Giới thiệu
+                </a>
+                <a href="/contact" class="footer-link">
+                    <i class="bi bi-chevron-right"></i> Liên hệ
+                </a>
+                <a href="/terms" class="footer-link">
+                    <i class="bi bi-chevron-right"></i> Điều khoản
+                </a>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="footer-title">Liên hệ</h5>
+
+                <div class="contact-info">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    Khu Công nghệ cao TP.HCM, Xa lộ Hà Nội, Phường Tăng Nhơn Phú, TP.HCM
+                </div>
+
+                <div class="contact-info">
+                    <i class="bi bi-telephone-fill"></i>
+                    <a href="tel:0901234567" class="text-white text-decoration-none">
+                        090 123 4567
+                    </a>
+                </div>
+
+                <div class="contact-info">
+                    <i class="bi bi-envelope-fill"></i>
+                    <a href="mailto:info@vietlutravel.vn" class="text-white text-decoration-none">
+                        vietlutravel@gmail.com
+                    </a>
+                </div>
+
+                <div class="contact-info">
+                    <i class="bi bi-clock-fill"></i>
+                    8:00 - 22:00 (Tất cả các ngày)
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-white-50">
+                        &copy; 2026 Việt Lữ Travel. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-white-50">
+                        Thiết kế bởi <span class="text-white">Việt Lữ Travel Team</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ========== CSS STYLES FOR FOOTER ========== -->
+<th:block th:fragment="footer-css">
+    <style>
+        .main-footer {
+            background: linear-gradient(135deg, #164e63, var(--ocean-blue-dark));
+            color: white;
+            margin-top: auto;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #e0f2fe;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            padding: 0.4rem 0;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .footer-link i {
+            color: var(--ocean-blue-light);
+            margin-right: 0.5rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            margin-right: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--ocean-blue-light);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info i {
+            color: var(--ocean-blue-light);
+            font-size: 1.2rem;
+            margin-right: 0.8rem;
+        }
+    </style>
+</th:block>
+
+</body>
+</html>

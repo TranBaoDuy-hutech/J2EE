@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa Tour</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 0;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-title {
+            color: #333;
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-title i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+        }
+
+        .form-body {
+            background: white;
+            padding: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-label i {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .required {
+            color: #f5576c;
+            margin-left: 3px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            outline: none;
+        }
+
+        .form-control:hover, .form-select:hover {
+            border-color: #667eea;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            font-weight: 600;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            width: 100%;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            color: white;
+        }
+
+        .btn-save i {
+            margin-right: 8px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            border: none;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+            color: white;
+        }
+
+        .form-text {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .form-text i {
+            color: #667eea;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper:hover {
+            background: #f0f4ff;
+        }
+
+        .form-check-input {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .form-check-label {
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .hot-badge {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .form-body {
+                padding: 25px;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h2 class="form-title">
+                <i class="bi bi-pencil-square"></i>
+                <span th:text="${tour.tourID != null ? 'Chỉnh sửa Tour' : 'Thêm Tour Mới'}">Chỉnh sửa Tour</span>
+            </h2>
+        </div>
+
+        <div class="form-body">
+            <form th:action="@{/admin/tours/save}" th:object="${tour}" method="post">
+                <!-- Hidden ID Field -->
+                <input type="hidden" th:field="*{tourID}" />
+
+                <!-- THÔNG TIN Cơ BẢN -->
+                <div class="section-title">
+                    <i class="bi bi-info-circle-fill"></i>
+                    Thông tin cơ bản
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-tag-fill"></i>
+                                Tên Tour
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{tourName}"
+                                   placeholder="Ví dụ: Du lịch Đà Nẵng 3 ngày 2 đêm"
+                                   required>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Nhập tên tour hấp dẫn để thu hút khách hàng
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                Điểm đến
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{location}"
+                                   placeholder="Ví dụ: Đà Nẵng"
+                                   required>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Điểm đến chính của tour
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-pin-map-fill"></i>
+                                Nơi khởi hành
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{departureLocation}"
+                                   placeholder="Ví dụ: TP. Hồ Chí Minh"
+                                   required>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Nơi bắt đầu hành trình
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-currency-dollar"></i>
+                                Giá Tour
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{price}"
+                                       placeholder="0"
+                                       min="0"
+                                       step="1000"
+                                       required>
+                                <span class="input-group-text">VNĐ</span>
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Giá cho mỗi khách
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-calendar-event"></i>
+                                Số ngày
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number"
+                                   class="form-control"
+                                   th:field="*{durationDays}"
+                                   placeholder="Ví dụ: 3"
+                                   min="1"
+                                   required>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Thời gian diễn ra tour
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-calendar-check"></i>
+                                Ngày khởi hành
+                                <span class="required">*</span>
+                            </label>
+                            <input type="date"
+                                   class="form-control"
+                                   th:field="*{startDate}"
+                                   required>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Ngày bắt đầu tour
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DỊCH VỤ & TIỆN ÍCH -->
+                <div class="section-title mt-4">
+                    <i class="bi bi-stars"></i>
+                    Dịch vụ & Tiện ích
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-building"></i>
+                                Tên khách sạn
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{hotelName}"
+                                   placeholder="Ví dụ: Vinpearl Resort & Spa">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Tên khách sạn lưu trú
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-truck"></i>
+                                Phương tiện di chuyển
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{transportation}"
+                                   placeholder="Ví dụ: Máy bay, Xe du lịch">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Phương tiện sử dụng trong tour
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LỊCH TRÌNH -->
+                <div class="section-title mt-4">
+                    <i class="bi bi-list-check"></i>
+                    Lịch trình chi tiết
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="bi bi-journal-text"></i>
+                        Lịch trình tour
+                    </label>
+                    <textarea class="form-control"
+                              th:field="*{itinerary}"
+                              placeholder="Mô tả chi tiết lịch trình từng ngày...
+Ngày 1: ...
+Ngày 2: ...
+Ngày 3: ..."
+                              rows="6"></textarea>
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Mô tả chi tiết các hoạt động trong từng ngày
+                    </div>
+                </div>
+
+                <!-- HÌNH ẢNH -->
+                <div class="section-title mt-4">
+                    <i class="bi bi-image"></i>
+                    Hình ảnh
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="bi bi-link-45deg"></i>
+                        URL hình ảnh
+                    </label>
+                    <input type="url"
+                           class="form-control"
+                           th:field="*{imageUrl}"
+                           placeholder="https://example.com/image.jpg"
+                           id="imageUrlInput"
+                           onchange="previewImage()">
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Link hình ảnh đại diện cho tour
+                    </div>
+                    <img id="imagePreview" class="image-preview" alt="Preview">
+                </div>
+
+                <!-- TRẠNG THÁI -->
+                <div class="section-title mt-4">
+                    <i class="bi bi-sliders"></i>
+                    Trạng thái
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-wrapper" onclick="document.getElementById('isHot').click()">
+                        <input type="checkbox"
+                               th:field="*{isHot}"
+                               class="form-check-input"
+                               id="isHot"
+                               onclick="event.stopPropagation()">
+                        <label class="form-check-label" for="isHot">
+                            <i class="bi bi-fire"></i>
+                            Đánh dấu là Tour Hot
+                            <span class="hot-badge">HOT</span>
+                        </label>
+                    </div>
+                    <div class="form-text" style="margin-left: 15px;">
+                        <i class="bi bi-info-circle"></i>
+                        Tour hot sẽ được hiển thị nổi bật trên trang chủ
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn btn-save">
+                        <i class="bi bi-check-circle"></i>
+                        Lưu Tour
+                    </button>
+                    <a href="/admin/tours" class="btn btn-cancel">
+                        <i class="bi bi-x-circle"></i>
+                        Hủy bỏ
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function previewImage() {
+        const input = document.getElementById('imageUrlInput');
+        const preview = document.getElementById('imagePreview');
+
+        if (input.value) {
+            preview.src = input.value;
+            preview.style.display = 'block';
+
+            preview.onerror = function() {
+                preview.style.display = 'none';
+                alert('Không thể tải hình ảnh từ URL này');
+            };
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    // Preview image on page load if URL exists
+    window.onload = function() {
+        previewImage();
+    };
+</script>
+</body>
+</html>

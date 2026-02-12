@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Quản lý Nhận Liên Hệ'">Quản lý Nhận Liên Hệ</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { background: white; border-radius: 20px; padding: 2.5rem; margin: 3rem auto; max-width: 1400px; box-shadow: 0 15px 50px rgba(0,0,0,0.25); }
+        .page-title { color: #667eea; font-weight: 700; text-align: center; margin-bottom: 2rem; }
+        .table thead { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .table th, .table td { vertical-align: middle; text-align: center; padding: 1rem; }
+        .empty-state { text-align: center; padding: 5rem 0; color: #9ca3af; }
+        .empty-state i { font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.4; }
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); }
+    </style>
+</head>
+<body>
+<!-- Header admin -->
+<div th:replace="fragments/admin-header :: adminHeader"></div>
+<div class="container">
+    <h2 class="page-title">
+        <i class="fas fa-envelope me-2"></i> Quản lý Nhận Liên Hệ
+    </h2>
+
+    <!-- Thông báo -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:unless="${contacts.isEmpty()}">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Nội dung</th>
+                <th>Ngày gửi</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="contact : ${contacts}">
+                <td th:text="${contact.id}"></td>
+                <td th:text="${contact.name}"></td>
+                <td th:text="${contact.email}"></td>
+                <td th:text="${contact.phone}"></td>
+                <td>
+                    <span th:text="${contact.message != null ? #strings.abbreviate(contact.message, 80) : 'Không có nội dung'}"
+                          th:attr="title=${contact.message}"></span>
+                </td>
+                <td th:text="${contact.createdAt}"></td>
+                <td>
+                    <form th:action="@{/admin/contacts/{id}/delete(id=${contact.id})}" method="post" class="d-inline"
+                          onsubmit="return confirm('Bạn chắc chắn muốn xóa liên hệ này?');">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${contacts.isEmpty()}" class="empty-state">
+        <i class="fas fa-envelope-open"></i>
+        <h4>Chưa có liên hệ nào</h4>
+        <p>Hiện tại chưa có khách hàng nào gửi tin nhắn.</p>
+    </div>
+
+    <div class="text-center mt-4">
+        <a th:href="@{/admin}" class="back-btn">
+            <i class="fas fa-arrow-left me-2"></i> Quay về Dashboard
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Footer admin -->
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+</body>
+</html>

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat CSKH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0a58ca;
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --msg-me: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --msg-staff: #f8f9fa;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .chat-container {
+            max-width: 850px;
+            height: 90vh;
+            margin: 5vh auto;
+        }
+
+        .chat-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        /* Header */
+        .chat-header {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chat-header-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .chat-header-info h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .chat-header-status {
+            font-size: 13px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Chat Box */
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #chatBox::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chatBox::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #chatBox::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* Messages */
+        .msg-wrapper {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-wrapper.me {
+            justify-content: flex-end;
+        }
+
+        .msg-wrapper.staff {
+            justify-content: flex-start;
+        }
+
+        .msg {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .msg.me {
+            background: var(--msg-me);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg.staff {
+            background: white;
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .msg-content {
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .msg-time {
+            font-size: 11px;
+            margin-top: 5px;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .msg.staff .msg-time {
+            text-align: left;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            padding: 12px 18px;
+            background: white;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid #e2e8f0;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        /* Date Divider */
+        .date-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .date-divider span {
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Input Area */
+        .chat-footer {
+            padding: 20px 25px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #msg {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        #msg:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        }
+
+        .emoji-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .emoji-btn:hover {
+            opacity: 1;
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .connection-status.show {
+            display: flex;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .connection-status.connected {
+            color: #16a34a;
+        }
+
+        .connection-status.disconnected {
+            color: #dc2626;
+        }
+
+        /* Welcome Message */
+        .welcome-msg {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .welcome-msg i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .welcome-msg h5 {
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+                margin: 0;
+            }
+
+            .chat-card {
+                border-radius: 0;
+            }
+
+            .msg {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Connection Status -->
+<div id="connectionStatus" class="connection-status">
+    <i class="fas fa-circle"></i>
+    <span id="statusText">Đang kết nối...</span>
+</div>
+
+<div class="container-fluid chat-container">
+    <div class="chat-card">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="chat-header-avatar">
+                <i class="fas fa-headset"></i>
+            </div>
+            <div class="chat-header-info">
+                <h5>Hỗ Trợ Khách Hàng</h5>
+                <div class="chat-header-status">
+                    <span class="status-dot"></span>
+                    <span>Trực tuyến</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Box -->
+        <div id="chatBox">
+            <div class="welcome-msg">
+                <i class="fas fa-comments"></i>
+                <h5>Chào mừng bạn!</h5>
+                <p>Chúng tôi sẵn sàng hỗ trợ bạn 24/7</p>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typingIndicator" class="typing-indicator" style="margin: 0 25px 15px;">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>
+
+        <!-- Footer -->
+        <div class="chat-footer">
+            <div class="input-wrapper">
+                <div class="input-container">
+                    <input id="msg"
+                           class="form-control"
+                           placeholder="Nhập tin nhắn của bạn..."
+                           onkeypress="handleKey(event)"
+                           autocomplete="off">
+                    <button class="emoji-btn" onclick="insertEmoji()">😊</button>
+                </div>
+                <button class="send-btn" onclick="send()" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let myId = [[${myId}]];
+    let staffId = 2;
+    let socket, stomp;
+    let isConnected = false;
+    let lastDate = null;
+
+    // Initialize connection
+    function initConnection() {
+        showConnectionStatus('Đang kết nối...', 'connecting');
+
+        socket = new SockJS('/chat');
+        stomp = Stomp.over(socket);
+
+        // Disable console logs
+        stomp.debug = null;
+
+        stomp.connect({}, function () {
+            isConnected = true;
+            showConnectionStatus('Đã kết nối', 'connected');
+            hideConnectionStatusAfter(3000);
+
+            // Subscribe to messages
+            stomp.subscribe('/queue/user-' + myId, function (res) {
+                let m = JSON.parse(res.body);
+                let isMe = !m.isFromAdmin;
+
+                // Hide typing indicator
+                hideTypingIndicator();
+
+                // Show message
+                show(m.content, isMe, m.timestamp);
+            });
+
+            loadHistory();
+        }, function(error) {
+            isConnected = false;
+            showConnectionStatus('Mất kết nối', 'disconnected');
+            console.error('Connection error:', error);
+
+            // Retry after 3 seconds
+            setTimeout(initConnection, 3000);
+        });
+    }
+
+    // Load chat history
+    function loadHistory() {
+        fetch('/chat/history')
+            .then(res => res.json())
+            .then(data => {
+                // Clear welcome message
+                let welcomeMsg = document.querySelector('.welcome-msg');
+                if (welcomeMsg) welcomeMsg.remove();
+
+                data.forEach(m => {
+                    let isMe = !m.isFromAdmin;
+                    show(m.content, isMe, m.timestamp, false);
+                });
+            })
+            .catch(err => console.error('Error loading history:', err));
+    }
+
+    // Send message
+    function send() {
+        if (!isConnected) {
+            alert('Chưa kết nối đến server. Vui lòng đợi...');
+            return;
+        }
+
+        let input = document.getElementById("msg");
+        let text = input.value.trim();
+
+        if (!text) return;
+
+        // Disable send button
+        let sendBtn = document.getElementById("sendBtn");
+        sendBtn.disabled = true;
+
+        // Show typing indicator for staff
+        showTypingIndicator();
+
+        stomp.send("/app/private-message", {}, JSON.stringify({
+            customerID: myId,
+            userID: staffId,
+            content: text,
+            isFromAdmin: false,
+            timestamp: new Date().toISOString()
+        }));
+
+        input.value = "";
+
+        // Re-enable send button
+        setTimeout(() => {
+            sendBtn.disabled = false;
+            input.focus();
+        }, 300);
+    }
+
+    // Display message
+    function show(text, isMe, timestamp = null, animate = true) {
+        let box = document.getElementById("chatBox");
+
+        // Remove welcome message if exists
+        let welcomeMsg = document.querySelector('.welcome-msg');
+        if (welcomeMsg) welcomeMsg.remove();
+
+        // Add date divider if needed
+        let msgDate = timestamp ? new Date(timestamp) : new Date();
+        let dateStr = formatDate(msgDate);
+
+        if (dateStr !== lastDate) {
+            let dateDivider = document.createElement("div");
+            dateDivider.className = "date-divider";
+            dateDivider.innerHTML = `<span>${dateStr}</span>`;
+            box.appendChild(dateDivider);
+            lastDate = dateStr;
+        }
+
+        // Create message wrapper
+        let wrapper = document.createElement("div");
+        wrapper.className = "msg-wrapper " + (isMe ? "me" : "staff");
+
+        // Create message
+        let div = document.createElement("div");
+        div.className = "msg " + (isMe ? "me" : "staff");
+
+        let content = document.createElement("div");
+        content.className = "msg-content";
+        content.innerText = text;
+
+        let time = document.createElement("div");
+        time.className = "msg-time";
+        time.innerText = formatTime(msgDate);
+
+        div.appendChild(content);
+        div.appendChild(time);
+        wrapper.appendChild(div);
+
+        box.appendChild(wrapper);
+
+        // Smooth scroll to bottom
+        smoothScrollToBottom();
+    }
+
+    // Typing indicator
+    function showTypingIndicator() {
+        let indicator = document.getElementById("typingIndicator");
+        indicator.classList.add("active");
+        smoothScrollToBottom();
+    }
+
+    function hideTypingIndicator() {
+        let indicator = document.getElementById("typingIndicator");
+        indicator.classList.remove("active");
+    }
+
+    // Connection status
+    function showConnectionStatus(text, status) {
+        let statusEl = document.getElementById("connectionStatus");
+        let textEl = document.getElementById("statusText");
+
+        textEl.innerText = text;
+        statusEl.className = "connection-status show " + status;
+    }
+
+    function hideConnectionStatusAfter(delay) {
+        setTimeout(() => {
+            let statusEl = document.getElementById("connectionStatus");
+            statusEl.classList.remove("show");
+        }, delay);
+    }
+
+    // Utilities
+    function formatDate(date) {
+        let today = new Date();
+        let yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        if (date.toDateString() === today.toDateString()) {
+            return "Hôm nay";
+        } else if (date.toDateString() === yesterday.toDateString()) {
+            return "Hôm qua";
+        } else {
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+    }
+
+    function formatTime(date) {
+        return date.toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function smoothScrollToBottom() {
+        let box = document.getElementById("chatBox");
+        box.scrollTo({
+            top: box.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function handleKey(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            send();
+        }
+    }
+
+    function insertEmoji() {
+        let input = document.getElementById("msg");
+        let emojis = ['😊', '👍', '❤️', '😂', '🎉', '👋', '🙏', '✨'];
+        let emoji = emojis[Math.floor(Math.random() * emojis.length)];
+        input.value += emoji;
+        input.focus();
+    }
+
+    // Initialize on page load
+    window.onload = function() {
+        initConnection();
+        document.getElementById("msg").focus();
+    };
+</script>
+</body>
+</html>

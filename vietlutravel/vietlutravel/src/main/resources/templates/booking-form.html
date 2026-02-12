@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt tour | Việt Lữ Travel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Include Header CSS -->
+    <th:block th:replace="~{fragments/header :: header-css}"></th:block>
+
+    <!-- Include Footer CSS -->
+    <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
+
+    <style>
+        :root {
+            --ocean-blue: #0891b2;
+            --ocean-blue-dark: #0e7490;
+            --ocean-blue-light: #06b6d4;
+        }
+
+        body {
+            background: #f0f9ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 3rem 0;
+        }
+
+        .booking-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(8, 145, 178, 0.15);
+            border: 2px solid #e0f2fe;
+        }
+
+        .booking-header {
+            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .booking-header h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .tour-name-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .booking-form {
+            padding: 3rem 2.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--ocean-blue-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            border: 2px solid #e0f2fe;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--ocean-blue);
+            box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15);
+        }
+
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ocean-blue);
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .input-group-icon .form-control {
+            padding-left: 3rem;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--ocean-blue), var(--ocean-blue-light));
+            border: none;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3);
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid var(--ocean-blue);
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .info-box i {
+            color: var(--ocean-blue);
+            font-size: 1.3rem;
+            margin-right: 0.8rem;
+        }
+
+        .tour-summary {
+            background: linear-gradient(135deg, #ecfeff, #e0f2fe);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 2px solid var(--ocean-blue-light);
+        }
+
+        .tour-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(8, 145, 178, 0.2);
+        }
+
+        .tour-summary-item:last-child {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--ocean-blue-dark);
+            padding-top: 1rem;
+        }
+
+        .required-star {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== INCLUDE HEADER ========== -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-content">
+    <div class="booking-container">
+
+        <div class="booking-card">
+
+            <!-- Booking Header -->
+            <div class="booking-header">
+                <i class="bi bi-calendar-check-fill" style="font-size: 3rem;"></i>
+                <h2>Đặt Tour Du Lịch</h2>
+                <div class="tour-name-badge">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <span th:text="${tour.tourName}">Tên tour</span>
+                </div>
+            </div>
+
+            <!-- Booking Form -->
+            <div class="booking-form">
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <strong>Lưu ý:</strong> Vui lòng điền đầy đủ thông tin để chúng tôi có thể liên hệ và xác nhận đặt tour cho bạn.
+                </div>
+
+                <!-- Tour Summary -->
+                <div class="tour-summary">
+                    <h5 class="fw-bold mb-3" style="color: var(--ocean-blue-dark);">
+                        <i class="bi bi-ticket-detailed-fill"></i> Thông tin tour
+                    </h5>
+                    <div class="tour-summary-item">
+                        <span><i class="bi bi-geo-alt"></i> Điểm đến:</span>
+                        <strong th:text="${tour.location}"></strong>
+                    </div>
+                    <div class="tour-summary-item">
+                        <span><i class="bi bi-calendar3"></i> Số ngày:</span>
+                        <strong><span th:text="${tour.durationDays}"></span> ngày</strong>
+                    </div>
+                    <div class="tour-summary-item">
+                        <span><i class="bi bi-cash-stack"></i> Giá tour:</span>
+                        <strong th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form action="/booking-tour" method="post">
+
+                    <input type="hidden" name="tourID" th:value="${tour.tourID}"/>
+
+                    <div class="row g-4">
+
+                        <!-- Họ tên -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-person-fill"></i> Họ và tên
+                                <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-person"></i>
+                                <input name="name" class="form-control" placeholder="Nhập họ và tên đầy đủ" required>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-envelope-fill"></i> Email
+                                <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-envelope"></i>
+                                <input name="email" type="email" class="form-control" placeholder="example@email.com" required>
+                            </div>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-telephone-fill"></i> Số điện thoại
+                                <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-telephone"></i>
+                                <input name="phone" type="tel" class="form-control" placeholder="090 123 4567" required>
+                            </div>
+                        </div>
+
+                        <!-- Số người -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-people-fill"></i> Số lượng người
+                                <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-people"></i>
+                                <input name="numberOfPeople" type="number" class="form-control" placeholder="Nhập số người" min="1" required>
+                            </div>
+                        </div>
+
+                        <!-- Ghi chú -->
+                        <div class="col-md-12">
+                            <label class="form-label">
+                                <i class="bi bi-chat-left-text-fill"></i> Ghi chú (Tùy chọn)
+                            </label>
+                            <textarea name="note" class="form-control" rows="4" placeholder="Nhập yêu cầu đặc biệt hoặc câu hỏi của bạn..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="bi bi-check-circle-fill"></i> Xác nhận đặt tour
+                            </button>
+                        </div>
+
+                        <!-- Help Text -->
+                        <div class="col-md-12 text-center">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check"></i>
+                                Thông tin của bạn được bảo mật tuyệt đối
+                            </small>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Contact Support -->
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <i class="bi bi-headset"></i>
+                Cần hỗ trợ? Liên hệ hotline:
+                <a href="tel:0901234567" style="color: var(--ocean-blue); font-weight: 600;">
+                    090 123 4567
+                </a>
+            </p>
+        </div>
+
+    </div>
+</main>
+
+<!-- ========== INCLUDE FOOTER ========== -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

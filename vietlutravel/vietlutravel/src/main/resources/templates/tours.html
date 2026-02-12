@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Tour | Việt Lữ Travel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <th:block th:replace="~{fragments/header :: header-css}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
+
+    <style>
+        :root {
+            --ocean-blue: #0891b2;
+            --ocean-blue-dark: #0e7490;
+            --light-bg: #f0f9ff;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background: var(--light-bg);
+        }
+
+        .tour-card {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-bg);
+            box-shadow: 0 6px 20px rgba(8,145,178,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(8,145,178,0.25);
+        }
+
+        .tour-img {
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .price-tag {
+            font-weight: 700;
+            color: var(--ocean-blue-dark);
+            font-size: 1.3rem;
+        }
+
+        h2 {
+            color: var(--ocean-blue-dark);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<main class="container py-5">
+
+    <h2 class="text-center mb-5">
+        <i class="bi bi-airplane-fill me-2"></i>
+        Danh sách Tour Du Lịch
+    </h2>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="tour : ${tours}">
+            <div class="tour-card h-100 d-flex flex-column">
+
+                <!-- Hình ảnh -->
+                <img th:src="${tour.imageUrl}"
+                     th:alt="${tour.tourName}"
+                     class="tour-img">
+
+                <!-- Nội dung -->
+                <div class="p-4 d-flex flex-column flex-grow-1">
+
+                    <h5 class="fw-bold mb-3" th:text="${tour.tourName}"></h5>
+
+                    <div class="mb-2 text-secondary">
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+                        <span th:text="${tour.location}"></span>
+                    </div>
+
+                    <div class="mt-auto">
+                        <div class="price-tag mb-3"
+                             th:text="${#numbers.formatDecimal(tour.price,0,'COMMA',0,'POINT')} + ' đ'">
+                        </div>
+
+                        <a th:href="@{/tour/{id}(id=${tour.tourID})}"
+                           class="btn btn-primary w-100">
+                            <i class="bi bi-eye me-2"></i> Xem chi tiết
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

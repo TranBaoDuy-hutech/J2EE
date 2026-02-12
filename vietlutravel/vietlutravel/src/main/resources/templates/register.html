@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký | Việt Lữ Travel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Include Header CSS -->
+    <th:block th:replace="~{fragments/header :: header-css}"></th:block>
+
+    <!-- Include Footer CSS -->
+    <th:block th:replace="~{fragments/footer :: footer-css}"></th:block>
+
+    <style>
+        :root {
+            --ocean-blue: #0891b2;
+            --ocean-blue-dark: #0e7490;
+            --ocean-blue-light: #06b6d4;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 3rem 0;
+        }
+
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(8, 145, 178, 0.2);
+            border: 2px solid #e0f2fe;
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, var(--ocean-blue-dark), var(--ocean-blue));
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .register-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .register-icon i {
+            font-size: 2.5rem;
+            color: var(--ocean-blue);
+        }
+
+        .register-header h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .register-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .register-form {
+            padding: 2.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--ocean-blue-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ocean-blue);
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .form-control {
+            border: 2px solid #e0f2fe;
+            border-radius: 12px;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--ocean-blue);
+            box-shadow: 0 0 0 0.25rem rgba(8, 145, 178, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--ocean-blue);
+            z-index: 10;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--ocean-blue), var(--ocean-blue-light));
+            border: none;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(8, 145, 178, 0.4);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0f2fe;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+            position: relative;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #64748b;
+        }
+
+        .login-link a {
+            color: var(--ocean-blue);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            color: var(--ocean-blue-dark);
+            text-decoration: underline;
+        }
+
+        .required-star {
+            color: #dc3545;
+            margin-left: 2px;
+        }
+
+        .social-register {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e0f2fe;
+            border-radius: 10px;
+            background: white;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .social-btn:hover {
+            border-color: var(--ocean-blue);
+            color: var(--ocean-blue);
+            background: #f0f9ff;
+        }
+
+        .social-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .terms-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .terms-text a {
+            color: var(--ocean-blue);
+            text-decoration: none;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* THÊM STYLE CHO YÊU CẦU MẬT KHẨU */
+        .password-requirements {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.6rem;
+            padding: 0.8rem 1rem;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border: 1px solid #bae6fd;
+        }
+
+        .password-requirements ul {
+            margin: 0.5rem 0 0 1.2rem;
+            padding: 0;
+            list-style-type: disc;
+        }
+
+        .password-requirements li {
+            margin-bottom: 0.4rem;
+        }
+
+        .password-requirements .met {
+            color: #10b981;
+            text-decoration: line-through;
+        }
+
+        .password-requirements .not-met {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== INCLUDE HEADER ========== -->
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-content">
+    <div class="register-container">
+
+        <div class="register-card">
+
+            <!-- Register Header -->
+            <div class="register-header">
+                <div class="register-icon">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <h2>Tạo tài khoản</h2>
+                <p>Bắt đầu hành trình khám phá cùng Việt Lữ Travel</p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="register-form">
+
+                <!-- Success/Error Message (nếu có) -->
+                <div class="success-message" th:if="${success}">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span th:text="${success}"></span>
+                </div>
+
+                <div class="error-message" th:if="${error}">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <form th:action="@{/register}" method="post" th:object="${customer}">
+
+                    <!-- Tên người dùng -->
+                    <div class="input-group-custom">
+                        <label class="form-label">
+                            <i class="bi bi-person-fill"></i> Tên người dùng
+                            <span class="required-star">*</span>
+                        </label>
+                        <i class="input-icon bi bi-person"></i>
+                        <input th:field="*{userName}"
+                               type="text"
+                               class="form-control"
+                               placeholder="Nhập tên người dùng"
+                               required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="input-group-custom">
+                        <label class="form-label">
+                            <i class="bi bi-envelope-fill"></i> Email
+                            <span class="required-star">*</span>
+                        </label>
+                        <i class="input-icon bi bi-envelope"></i>
+                        <input th:field="*{email}"
+                               type="email"
+                               class="form-control"
+                               placeholder="example@email.com"
+                               required>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="input-group-custom">
+                        <label class="form-label">
+                            <i class="bi bi-telephone-fill"></i> Số điện thoại
+                            <span class="required-star">*</span>
+                        </label>
+                        <i class="input-icon bi bi-telephone"></i>
+                        <input th:field="*{phone}"
+                               type="tel"
+                               class="form-control"
+                               placeholder="090 123 4567"
+                               required>
+                    </div>
+
+                    <!-- Mật khẩu + Yêu cầu mật khẩu -->
+                    <div class="input-group-custom">
+                        <label class="form-label">
+                            <i class="bi bi-lock-fill"></i> Mật khẩu
+                            <span class="required-star">*</span>
+                        </label>
+                        <i class="input-icon bi bi-lock"></i>
+                        <input th:field="*{passwordHash}"
+                               type="password"
+                               id="password"
+                               class="form-control"
+                               placeholder="Nhập mật khẩu"
+                               required>
+                        <i class="password-toggle bi bi-eye" id="togglePassword"></i>
+
+                        <!-- THÊM PHẦN YÊU CẦU MẬT KHẨU NGAY DƯỚI Ô NÀY -->
+                        <div class="password-requirements">
+                            <strong>Yêu cầu mật khẩu:</strong>
+                            <ul>
+                                <li id="length" class="not-met">Ít nhất 6 ký tự</li>
+                                <li id="uppercase" class="not-met">Ít nhất 1 chữ cái in hoa</li>
+                                <li id="lowercase" class="not-met">Ít nhất 1 chữ cái thường</li>
+                                <li id="number" class="not-met">Ít nhất 1 chữ số</li>
+                                <li id="special" class="not-met">Ít nhất 1 ký tự đặc biệt (ví dụ: ! @ # $ %)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="terms-text">
+                        Bằng việc đăng ký, bạn đồng ý với
+                        <a href="/terms">Điều khoản sử dụng</a> và
+                        <a href="/privacy">Chính sách bảo mật</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-register">
+                        <i class="bi bi-check-circle-fill"></i> Đăng ký ngay
+                    </button>
+
+                </form>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span>hoặc đăng ký với</span>
+                </div>
+
+                <!-- Social Register Buttons -->
+                <div class="social-register">
+                    <button class="social-btn">
+                        <i class="bi bi-google"></i> Google
+                    </button>
+                    <button class="social-btn">
+                        <i class="bi bi-facebook"></i> Facebook
+                    </button>
+                </div>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    Đã có tài khoản?
+                    <a href="/login">Đăng nhập ngay</a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Help Text -->
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <i class="bi bi-shield-check"></i>
+                Thông tin của bạn được bảo mật tuyệt đối
+            </p>
+        </div>
+
+    </div>
+</main>
+
+<!-- ========== INCLUDE FOOTER ========== -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+
+        // Toggle icon
+        this.classList.toggle('bi-eye');
+        this.classList.toggle('bi-eye-slash');
+    });
+
+    // Real-time check yêu cầu mật khẩu
+    password.addEventListener('input', function () {
+        const pwd = this.value;
+
+        // Độ dài
+        document.getElementById('length').className = pwd.length >= 6 ? 'met' : 'not-met';
+
+        // Chữ hoa
+        document.getElementById('uppercase').className = /[A-Z]/.test(pwd) ? 'met' : 'not-met';
+
+        // Chữ thường
+        document.getElementById('lowercase').className = /[a-z]/.test(pwd) ? 'met' : 'not-met';
+
+        // Số
+        document.getElementById('number').className = /[0-9]/.test(pwd) ? 'met' : 'not-met';
+
+        // Ký tự đặc biệt
+        document.getElementById('special').className = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) ? 'met' : 'not-met';
+    });
+</script>
+
+</body>
+</html>
