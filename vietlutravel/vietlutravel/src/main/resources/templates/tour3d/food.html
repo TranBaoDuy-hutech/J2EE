@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,12 @@
     <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: #f8f9fa;
             color: #333;
@@ -20,7 +26,8 @@
 
         h2 {
             text-align: center;
-            color: #d32f2f; /* Màu đỏ đặc trưng miền Tây */
+            color: #d32f2f;
+            /* Màu đỏ đặc trưng miền Tây */
             margin: 30px 0 20px;
             font-size: 2.2rem;
         }
@@ -37,14 +44,14 @@
             background: white;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
         }
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
         }
 
         model-viewer {
@@ -67,7 +74,7 @@
         .loading {
             position: absolute;
             inset: 0;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,537 +90,51 @@
         }
 
         @media (max-width: 600px) {
-            .gallery { grid-template-columns: 1fr; }
-            model-viewer { height: 280px; }
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            model-viewer {
+                height: 280px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<h2>Đặc sản 3D - Khám phá An Giang</h2>
+    <h2>Đặc sản 3D - Khám phá An Giang</h2>
 
-<div class="gallery">
-
-    <div class="card">
-        <model-viewer
-                src="/models/ga.glb"
-                poster="/models/posters/ga.jpg"
-                alt="Gà Đốt Ô Thum đặc sản An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                ar-modes="webxr scene-viewer quick-look"
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Gà Đốt Ô Thum</h3>
+    <div class="gallery">
+        <div class="card" th:each="food : ${foods}">
+            <model-viewer th:src="${food.modelPath}" th:poster="${food.posterPath}" th:alt="${food.altText}" auto-rotate
+                rotation-per-second="30deg" camera-controls ar ar-modes="webxr scene-viewer quick-look"
+                shadow-intensity="1" exposure="0.8">
+                <div class="loading">Đang tải mô hình 3D...</div>
+            </model-viewer>
+            <div class="info">
+                <a th:href="@{'/tour3d/food/' + ${food.id}}"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <h3 th:text="${food.name}">Tên Món Ăn</h3>
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <model-viewer
-                src="/models/thotnot.glb"
-                poster="/models/posters/thotnot.jpg"
-                alt="Bánh Bò Thốt Nốt đặc sản An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Bò Thốt Nốt</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/bunquay.glb"
-                poster="/models/posters/bunquay.jpg"
-                alt="Bún Quậy An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bún Quậy An Giang</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/traithotnot.glb"
-                poster="/models/posters/traithotnot.jpg"
-                alt="Trái Thốt Nốt An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Trái Thốt Nốt An Giang</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/boleonui.glb"
-                poster="/models/posters/boleonui.jpg"
-                alt="Bò Leo Núi An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bò Leo Núi An Giang</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/bunca.glb"
-                poster="/models/posters/bunca.jpg"
-                alt="Bún Cá Châu Đốc - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bún Cá Châu Đốc</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/comtam.glb"
-                poster="/models/posters/comtam.jpg"
-                alt="Cơm Tấm Long Xuyên - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Cơm Tấm Long Xuyên</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/laumam.glb"
-                poster="/models/posters/laumam.jpg"
-                alt="Lẩu Mắm Châu Đốc - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Lẩu Mắm Châu Đốc</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/bo7.glb"
-                poster="/models/posters/bo7.jpg"
-                alt="Bò bảy món Núi Sam - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bò Bảy Món Núi Sam</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhxeo.glb"
-                poster="/models/posters/banhxeo.jpg"
-                alt="Bánh Xèo - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Xèo An Giang</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/duong.glb"
-                poster="/models/posters/duong.jpg"
-                alt="Đường Thốt Nốt - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Đường Thốt Nốt</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/traichuc.glb"
-                poster="/models/posters/traichuc.jpg"
-                alt="Trái Chúc - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Trái Chúc An Giang</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/xoiphongchomoi.glb"
-                poster="/models/posters/xoiphongchomoi.jpg"
-                alt="Xôi Phồng Chợ Mới - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Xôi Phồng Chợ Mới</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhcham.glb"
-                poster="/models/posters/banhcham.jpg"
-                alt="Bánh Chăm - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Chăm</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhcanh.glb"
-                poster="/models/posters/banhcanh.jpg"
-                alt="Bánh Canh Vĩnh Trung - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Canh Vĩnh Trung</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/khorananphu.glb"
-                poster="/models/posters/khorananphu.jpg"
-                alt="Khô rắn An Phú - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Khô Rắn An Phú</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhmande.glb"
-                poster="/models/posters/banhmande.jpg"
-                alt="Bánh Mằn Dè - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Mằn Dè</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhhanhnhan.glb"
-                poster="/models/posters/banhhanhnhan.jpg"
-                alt="Bánh Hạnh Nhân - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Hạnh Nhân</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/goicatrich.glb"
-                poster="/models/posters/goicatrich.jpg"
-                alt="Gỏi Cá Trích - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Gỏi Cá Trích</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/comghe.glb"
-                poster="/models/posters/comghe.jpg"
-                alt="Cơm Ghẹ - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Cơm Ghẹ</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/nuocmam.glb"
-                poster="/models/posters/nuocmam.jpg"
-                alt="Nước Mắm Phú Quốc - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Nước Mắm Phú Quốc</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/tieu.glb"
-                poster="/models/posters/tieu.jpg"
-                alt="Tiêu Phú Quốc - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Tiêu Phú Quốc</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhtet.glb"
-                poster="/models/posters/banhtet.jpg"
-                alt="Bánh Tét Mật Cật - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Tét Mật Cật</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/bunken.glb"
-                poster="/models/posters/bunken.jpg"
-                alt="Bún Kèn Hà Tiên - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bún Kèn Hà Tiên</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/haisan.glb"
-                poster="/models/posters/haisan.jpg"
-                alt="Hải Sản Hà Tiên, Phú Quốc - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Hải Sản Hà Tiên, Phú Quốc</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/banhduc.glb"
-                poster="/models/posters/banhduc.jpg"
-                alt="Bánh ống lá dứa - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Bánh Ống Lá Dứa</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/chuot.glb"
-                poster="/models/posters/chuot.jpg"
-                alt="Thịt chuột đồng quay lu - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Thịt Chuột Đồng Quay Lu</h3>
-        </div>
-    </div>
-
-    <div class="card">
-        <model-viewer
-                src="/models/lapxuong.glb"
-                poster="/models/posters/lapxuong.jpg"
-                alt="Tung lò mò (Lạp xưởng bò Chăm) - An Giang"
-                auto-rotate
-                rotation-per-second="30deg"
-                camera-controls
-                ar
-                shadow-intensity="1"
-                exposure="0.8">
-            <div class="loading">Đang tải mô hình 3D...</div>
-        </model-viewer>
-        <div class="info">
-            <h3>Tung Lò Mò (Lạp Xưởng Bò Chăm)</h3>
-        </div>
-    </div>
-
-</div>
-
-<script>
-    // Tự động ẩn loading khi model load xong
-    document.querySelectorAll('model-viewer').forEach(mv => {
-        mv.addEventListener('load', () => {
-            const loading = mv.querySelector('.loading');
-            if (loading) loading.classList.add('hidden');
+    <script>
+        // Tự động ẩn loading khi model load xong
+        document.querySelectorAll('model-viewer').forEach(mv => {
+            mv.addEventListener('load', () => {
+                const loading = mv.querySelector('.loading');
+                if (loading) loading.classList.add('hidden');
+            });
+            mv.addEventListener('error', () => {
+                const loading = mv.querySelector('.loading');
+                if (loading) loading.textContent = 'Lỗi tải mô hình';
+            });
         });
-        mv.addEventListener('error', () => {
-            const loading = mv.querySelector('.loading');
-            if (loading) loading.textContent = 'Lỗi tải mô hình';
-        });
-    });
-</script>
+    </script>
 
 </body>
+
 </html>
