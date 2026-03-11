@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${culture.title}">Chi tiết Văn hóa</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Lớp làm mờ background */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px; /* Tăng chiều rộng để chia cột đẹp hơn */
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 35px;
+            color: #b71c1c;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            border-bottom: 3px solid #b71c1c;
+            display: inline-block;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        /* Bố cục chia cột chính */
+        .card-content {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        /* Phần Video */
+        .video-column {
+            flex: 1.5; /* Chiếm khoảng 60% chiều rộng */
+            position: sticky;
+            top: 20px;
+        }
+
+        .video-box {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: #000;
+            aspect-ratio: 16 / 9; /* Giữ tỷ lệ khung hình video */
+        }
+
+        .video-box iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Phần Nội dung văn bản */
+        .text-column {
+            flex: 1; /* Chiếm khoảng 40% chiều rộng */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .content-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            text-align: justify;
+            color: #333;
+            max-height: 500px; /* Giới hạn chiều cao nếu text quá dài */
+            overflow-y: auto; /* Tạo thanh cuộn nội bộ nếu cần */
+            padding-right: 15px;
+        }
+
+        /* Tùy chỉnh thanh cuộn cho phần text */
+        .content-text::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content-text::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        /* Nút quay lại */
+        .back-area {
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 28px;
+            background: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .back-btn:hover {
+            background: #0d47a1;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(13, 71, 161, 0.4);
+        }
+
+        /* Responsive cho Mobile và Tablet */
+        @media (max-width: 992px) {
+            .card-content {
+                flex-direction: column; /* Quay về dạng cột dọc trên màn hình nhỏ */
+            }
+            .video-column, .text-column {
+                width: 100%;
+                flex: none;
+            }
+            .title {
+                font-size: 1.8rem;
+            }
+            .content-text {
+                max-height: none; /* Bỏ giới hạn chiều cao trên mobile */
+            }
+        }
+    </style>
+</head>
+
+<body th:style="'background-image:url(' + ${culture.thumbnail} + ');'">
+
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="title" th:text="${culture.title}">Tên Văn Hóa</h1>
+            
+            <div class="card-content">
+                <div class="video-column">
+                    <div class="video-box">
+                        <iframe th:src="${culture.videoUrl}" 
+                                title="YouTube video player" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="text-column">
+                    <div class="content-text">
+                        <p th:text="${culture.fullDescription}">
+                            nội dung mô tả
+                        </p>
+                    </div>
+
+                    <div class="back-area">
+                        <a href="/tour3d/culture" class="back-btn">
+                            <svg style="width:20px; margin-right:8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
